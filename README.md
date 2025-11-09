@@ -20,8 +20,7 @@ ArtChain is built as a full-stack JavaScript application with the following comp
 
 The diagram below gives a high-level view of how the main pieces of ArtChain interact: the React client (browser), wallet providers, the Node.js backend (REST API + WebSocket collaboration server), storage, the Stellar network (Horizon), and external DeFi services like Blend Capital.
 
-<img width="960" height="507" alt="download" src="https://github.com/user-attachments/assets/a0104c05-a114-48a2-a59b-c85c0b934a6f" />
-
+<img width="1735" height="495" alt="Screenshot (1494)" src="https://github.com/user-attachments/assets/04791b4a-e640-499a-9a35-cab97e526db0" />
 
 ### Detailed Component Architecture
 
