@@ -131,8 +131,8 @@ This project is deployed on the Stellar Testnet to provide a realistic yet cost-
 - **Network**: Stellar Testnet
 - **Deployed Contract Address**: `GBTA4QM67MZTTGHXOHQYKY7QNJKRHA2C7MYIB2DBIKVFHVWCBHTE4W25`
 - **Transaction Hash**: `6a5347404e68acfedae7e1bc51ea1efb95cbf1dbf419a89ff50ab2312f9df71b`
-- **[View on Stellar Expert](https://testnet.stellar.expert/explorer/testnet/account/GBTA4QM67MZTTGHXOHQYKY7QNJKRHA2C7MYIB2DBIKVFHVWCBHTE4W25)**: View the contract on Stellar Testnet Explorer
-- **[View Transaction](https://testnet.stellar.expert/explorer/testnet/tx/6a5347404e68acfedae7e1bc51ea1efb95cbf1dbf419a89ff50ab2312f9df71b)**: View the deployment transaction
+- **[View on Stellar Expert](https://stellar.expert/explorer/testnet/account/GBTA4QM67MZTTGHXOHQYKY7QNJKRHA2C7MYIB2DBIKVFHVWCBHTE4W25)**: View the contract on Stellar Testnet Explorer
+- **[Stellarchain](https://testnet.stellarchain.io/accounts/GBTA4QM67MZTTGHXOHQYKY7QNJKRHA2C7MYIB2DBIKVFHVWCBHTE4W25)**: View the Explorer
 
 ### Stellar Developer Tools Integration
 
