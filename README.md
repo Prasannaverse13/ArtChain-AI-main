@@ -20,44 +20,46 @@ ArtChain is built as a full-stack JavaScript application with the following comp
 
 The diagram below gives a high-level view of how the main pieces of ArtChain interact: the React client (browser), wallet providers, the Node.js backend (REST API + WebSocket collaboration server), storage, the Stellar network (Horizon), and external DeFi services like Blend Capital.
 
+```mermaid
 flowchart LR
-   %% Client side
-   subgraph CLIENT[Client (browser)]
-      B["Browser / React + TypeScript"]
-      W["Wallets\n(Freighter, xBull, Rabet, Albedo, WalletConnect)"]
-   end
+  %% Client side
+  subgraph CLIENT[Client (browser)]
+    B["Browser / React + TypeScript"]
+    W["Wallets<br/>(Freighter, xBull, Rabet, Albedo, WalletConnect)"]
+  end
 
-   %% Server side
-   subgraph SERVER[Server]
-      API["Node.js / Express API"]
-      WS["WebSocket Collaboration Server"]
-      S["Storage\n(in-memory, optional IPFS / S3)"]
-   end
+  %% Server side
+  subgraph SERVER[Server]
+    API["Node.js / Express API"]
+    WS["WebSocket Collaboration Server"]
+    S["Storage<br/>(in-memory, optional IPFS / S3)"]
+  end
 
-   %% Blockchain and external
-   subgraph BLOCKCHAIN[Blockchain & External Services]
-      ST["Stellar Network (Horizon)\nTestnet/Mainnet"]
-      BL["Blend Capital (DeFi)\nExternal Protocols & Services"]
-   end
+  %% Blockchain and external
+  subgraph BLOCKCHAIN[Blockchain & External Services]
+    ST["Stellar Network (Horizon)<br/>Testnet / Mainnet"]
+    BL["Blend Capital (DeFi)<br/>External Protocols & Services"]
+  end
 
-   %% Flows
-   B -->|HTTP / REST| API
-   B -->|WebSocket (real-time collaboration)| WS
-   B -->|Connect & Sign| W
-   W -->|Signed transactions| API
-   API -->|Stellar SDK / Horizon| ST
-   API -->|Read / write| S
-   WS -->|Sync / presence| API
-   API -->|Integrate| BL
-   ST -->|Events / confirmations| API
+  %% Flows
+  B -->|HTTP / REST| API
+  B -->|WebSocket (real-time collaboration)| WS
+  B -->|Connect & Sign| W
+  W -->|Signed transactions| API
+  API -->|Stellar SDK / Horizon| ST
+  API -->|Read / write| S
+  WS -->|Sync / presence| API
+  API -->|Integrate| BL
+  ST -->|Events / confirmations| API
 
-   %% Optional external storage
-   S -->|optional| IPFS["IPFS / Object Storage"]
+  %% Optional external storage
+  S -->|optional| IPFS["IPFS / Object Storage"]
 
-   classDef infra fill:#f9f,stroke:#333,stroke-width:1px;
-   class SERVER,BLOCKCHAIN,CLIENT infra
+  classDef infra fill:#f9f,stroke:#333,stroke-width:1px;
+  class SERVER,BLOCKCHAIN,CLIENT infra
+````
 
-Note: this diagram focuses on the high-level data and message flows. Implementation details (for example which exact storage engine is used) are described elsewhere in this README and in the codebase (`client/src/lib/stellar.ts`, `server/*.ts`, `client/src/lib/blend.ts`).
+> Note: this diagram focuses on the high-level data and message flows. Implementation details (for example which exact storage engine is used) are described elsewhere in this README and in the codebase (`client/src/lib/stellar.ts`, `server/*.ts`, `client/src/lib/blend.ts`).
 
 ## System Architecture
 
@@ -65,88 +67,74 @@ Note: this diagram focuses on the high-level data and message flows. Implementat
 
 ```mermaid
 graph TB
-   subgraph "Frontend Layer"
-      UI["React + Vite UI\n(Canvas, Studio, Marketplace)"]
-      WALLET["Wallet Modal\n(Freighter, xBull, Rabet, Albedo, WalletConnect)"]
-      CANVAS["Realtime Canvas\n(client/src/hooks/use-canvas.ts)"]
-   end
+  subgraph "Frontend Layer"
+    UI["React + Vite UI<br/>(Canvas, Studio, Marketplace)"]
+    WALLET["Wallet Modal<br/>(Freighter, xBull, Rabet, Albedo, WalletConnect)"]
+    CANVAS["Realtime Canvas<br/>(client/src/hooks/use-canvas.ts)"]
+  end
 
-   subgraph "Backend Layer"
-      API["Node.js + Express API\n(server/index.ts, routes.ts)"]
-      WS["WebSocket Collaboration Server\n(realtime sync)"]
-      STORAGE["In-memory Storage\n(server/storage.ts)\n(optional: IPFS / S3)"]
-   end
+  subgraph "Backend Layer"
+    API["Node.js + Express API<br/>(server/index.ts, routes.ts)"]
+    WS["WebSocket Collaboration Server<br/>(realtime sync)"]
+    STORAGE["In-memory Storage<br/>(server/storage.ts)<br/>(optional: IPFS / S3)"]
+  end
 
-   subgraph "Blockchain & DeFi Layer"
-      STELLAR["Stellar Network (Horizon)\n(client/src/lib/stellar.ts)"]
-      BLEND["Blend Capital (DeFi)\n(client/src/lib/blend.ts)"]
-  *  end
+  subgraph "Blockchain & DeFi Layer"
+    STELLAR["Stellar Network (Horizon)<br/>(client/src/lib/stellar.ts)"]
+    BLEND["Blend Capital (client/src/lib/blend.ts)"]
+  end
 
-   subgraph "External Services"
-      IPFS["IPFS / Object Storage (optional)"]
-      HORIZON["Horizon API"]
-   end
+  subgraph "External Services"
+    IPFS["IPFS / Object Storage (optional)"]
+    HORIZON["Horizon API"]
+  end
 
-   UI -->|HTTP / REST| API
-   UI -->|WebSocket (realtime)| WS
-   UI -->|Open wallet modal / connect| WALLET
-   CANVAS -->|draw events| WS
-   WALLET -->|signed tx| API
-   API -->|Stellar SDK / Horizon| STELLAR
-   API -->|Blend integration| BLEND
-   API -->|read/write| STORAGE
-   STORAGE -->|optional| IPFS
-   STELLAR -->|events / confirmations| API
+  UI -->|HTTP / REST| API
+  UI -->|WebSocket (realtime)| WS
+  UI -->|Open wallet modal / connect| WALLET
+  CANVAS -->|draw events| WS
+  WALLET -->|signed tx| API
+  API -->|Stellar SDK / Horizon| STELLAR
+  API -->|Blend integration| BLEND
+  API -->|read/write| STORAGE
+  STORAGE -->|optional| IPFS
+  STELLAR -->|events / confirmations| API
 
-   style API fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
-   style STELLAR fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
-   style BLEND fill:#6366f1,stroke:#4f46e5,stroke-width:2px,color:#fff
+  style API fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+  style STELLAR fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+  style BLEND fill:#6366f1,stroke:#4f46e5,stroke-width:2px,color:#fff
 ```
-
 
 ### Detailed Component Architecture
 
-┌─────────────────────────────────────────────────────────────┐
-│                         Client Browser                      │
-│  - React + Vite (client/src/*)                              │
-│  - UI: App.tsx, pages (studio, marketplace, profile)        │
-│  - Components: client/src/components/ (canvas, wallet-modal)│
-└───────────────────────────┬─────────────────────────────────┘
-                     │
-┌───────────────────────────┴─────────────────────────────────┐
-│                   Client-side Realtime Layer                │
-│  - WebSocket connection for collaboration (WS server)       │
-│  - Hooks: use-canvas, use-wallet                            │
-└───────────────────────────┬─────────────────────────────────┘
-                     │
-┌───────────────────────────┴─────────────────────────────────┐
-│        B                Backend (Server)          	           │
-│  - Node.js + Express (server/index.ts, server/routes.ts)    │
-│  - WebSocket Collaboration Server (realtime sync)           │
-│  - In-memory storage + API endpoints (server/storage.ts)    │
-└─────────┬─────────────────┬──────────────────────────────────┘
-        │                 │
-        │                 │
-        ▼                 ▼
-┌────────────────┐   ┌────────────────────────────┐
-│   Storage      │   │      Blockchain / DeFi      │
-│  - in-memory   │   │  - Stellar (Horizon SDK)    │
-│  - optional:   │   │    implementations in       │
-│    IPFS / S3   │   │    client/src/lib/stellar.ts │
-└────────────────┘   │  - Blend Capital (client/.. │
-                │    src/lib/blend.ts)         │
-                └────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                    External Integrations                     │
-│  - Wallet providers: Freighter, xBull, Albedo, Rabet, WalletConnect
-│  - Horizon API & Stellar Testnet/Mainnet    	               
-│  - Optional: IPFS, S3, CDN for serving large assets           
-└─────────────────────────────────────────────────────────────┘
 ```
+Client Browser
+ - React + Vite (client/src/*)
+ - UI: App.tsx, pages (studio, marketplace, profile)
+ - Components: client/src/components/ (canvas, wallet-modal)
 
-This layout mirrors the repository structure: client UI and hooks under `client/`, blockchain helpers under `client/src/lib/stellar.ts` and `client/src/lib/wallet-kit.ts`, DeFi connectors under `client/src/lib/blend.ts`, and the backend server code in `server/`.
+Client-side Realtime Layer
+ - WebSocket connection for collaboration (WS server)
+ - Hooks: use-canvas, use-wallet
 
+Backend (Server)
+ - Node.js + Express (server/index.ts, server/routes.ts)
+ - WebSocket Collaboration Server (realtime sync)
+ - In-memory storage + API endpoints (server/storage.ts)
+
+Storage
+ - in-memory (default)
+ - optional: IPFS / S3 / CDN for large assets
+
+Blockchain / DeFi
+ - Stellar (Horizon SDK) — client/src/lib/stellar.ts
+ - Blend Capital connector — client/src/lib/blend.ts
+
+External Integrations
+ - Wallet providers: Freighter, xBull, Albedo, Rabet, WalletConnect
+ - Horizon API & Stellar Testnet/Mainnet
+ - Optional: IPFS, S3, CDN for serving large assets
+```
 
 ### Frontend (React + TypeScript)
 - Real-time canvas for artwork creation
